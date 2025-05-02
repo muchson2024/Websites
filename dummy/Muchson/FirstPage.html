@@ -3,9 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caca</title>
+    <title>Atomic Structure</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #3a36e0;
+            --secondary-color: #7678ed;
+            --accent-color: #6a4c93;
+            --background-color: #f5f5f7;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            background-image: radial-gradient(circle, rgba(118, 120, 237, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--card-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .atom-icon {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .nucleus {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .electron-orbit {
+            position: absolute;
+            border: 1px solid rgba(106, 76, 147, 0.7);
+            border-radius: 50%;
+        }
+        
+        .orbit-1 {
+            width: 25px;
+            height: 25px;
+            top: 7.5px;
+            left: 7.5px;
+        }
+        
+        .orbit-2 {
+            width: 40px;
+            height: 40px;
+            top: 0;
+            left: 0;
+            transform: rotate(60deg);
+        }
+        
+        .electron {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+        
+        .electron-1 {
+            top: 7.5px;
+            left: 20px;
+        }
+        
+        .electron-2 {
+            bottom: 5px;
+            right: 10px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover, nav ul li a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Main Content Styles */
+        main {
+            padding: 40px 0;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .content-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--card-color);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card-header {
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        
+        .card-header h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        
+        .card-content p {
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .atom-image {
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        .progress-tracker {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-info p {
+            margin-bottom: 5px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                margin-top: 10px;
+            }
+            
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .content-card {
+                margin-bottom: 20px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="atom-icon">
+                    <div class="nucleus"></div>
+                    <div class="electron-orbit orbit-1"></div>
+                    <div class="electron-orbit orbit-2"></div>
+                    <div class="electron electron-1"></div>
+                    <div class="electron electron-2"></div>
+                </div>
+                <h1>Atomic Structure</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#learning-materials" class="active">Learning Materials</a></li>
+                    <li><a href="#exercises">Exercises</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     
+    <main>
+        <div class="container">
+            <div class="content-wrapper">
+                <section id="learning-materials" class="content-card">
+                    <div class="card-header">
+                        <h2>Learning Materials</h2>
+                    </div>
+                    <div class="card-content">
+                        <p>Discover the fascinating world of atomic structure, the fundamental building blocks of all matter. Atoms consist of protons, neutrons, and electrons arranged in a complex system that determines the properties of all elements in our universe.</p>
+                        
+                        <svg class="atom-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Electron Orbits -->
+                            <ellipse cx="100" cy="100" rx="90" ry="30" fill="none" stroke="#3a36e0" stroke-width="1" transform="rotate(0, 100, 100)" />
+                            <ellipse cx="100" cy="100" rx="90" ry="30" fill="none" stroke="#3a36e0" stroke-width="1" transform="rotate(60, 100, 100)" />
+                            <ellipse cx="100" cy="100" rx="90" ry="30" fill="none" stroke="#3a36e0" stroke-width="1" transform="rotate(120, 100, 100)" />
+                            
+                            <!-- Electrons -->
+                            <circle cx="190" cy="100" r="5" fill="#3a36e0" />
+                            <circle cx="10" cy="100" r="5" fill="#3a36e0" />
+                            <circle cx="145" cy="160" r="5" fill="#3a36e0" />
+                            <circle cx="55" cy="40" r="5" fill="#3a36e0" />
+                            <circle cx="145" cy="40" r="5" fill="#3a36e0" />
+                            <circle cx="55" cy="160" r="5" fill="#3a36e0" />
+                            
+                            <!-- Nucleus -->
+                            <circle cx="100" cy="100" r="20" fill="#6a4c93" />
+                            <circle cx="95" cy="95" r="5" fill="#ff5722" />
+                            <circle cx="105" cy="95" r="5" fill="#ff9800" />
+                            <circle cx="95" cy="105" r="5" fill="#ff9800" />
+                            <circle cx="105" cy="105" r="5" fill="#ff5722" />
+                        </svg>
+                        
+                        <div class="button-group">
+                            <a href="#" class="btn">Atomic Particles</a>
+                            <a href="#" class="btn">Electron Configuration</a>
+                            <a href="#" class="btn">Isotopes</a>
+                            <a href="#" class="btn">Atomic Models</a>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="exercises" class="content-card">
+                    <div class="card-header">
+                        <h2>Exercises</h2>
+                    </div>
+                    <div class="card-content">
+                        <p>Test your knowledge of atomic structure with our interactive exercises and quizzes. Apply what you've learned and track your progress as you master the fundamental concepts of atomic structure.</p>
+                        
+                        <div class="button-group">
+                            <a href="#" class="btn">Quizzes</a>
+                            <a href="#" class="btn">Interactive Models</a>
+                            <a href="#" class="btn">Practice Problems</a>
+                        </div>
+                        
+                        <p>Your progress:</p>
+                        <div class="progress-tracker"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-info">
+                <p>Teacher Muchson</p>
+                <p>&copy; 2025</p>
+            </div>
+            <div>
+                <a href="#" class="btn">Contact</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
