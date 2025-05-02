@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Bonding Explorer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f6ff;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        #start-screen {
+            display: flex;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-difficulty {
+            min-width: 120px;
+        }
+        .difficulty-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .instructions {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .level-display {
+            font-size: 1.2rem;
+        }
+        .game-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .periodic-table {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .elements-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .element {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            background-color: #e8f4fd;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .element:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        }
+        .element-symbol {
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+        .element-name {
+            font-size: 0.7rem;
+            margin-top: 2px;
+        }
+        .workspace {
+            flex: 2;
+            min-width: 400px;
+            min-height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .workspace-heading {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .atom-in-workspace {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: move;
+            z-index: 10;
+        }
+        .atom-in-workspace .element-symbol {
+            font-size: 1.5rem;
+        }
+        .electrons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .electron {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #3498db;
+            border-radius: 50%;
+            transform-origin: center center;
+        }
+        .bond {
+            position: absolute;
+            height: 6px;
+            background-color: rgba(44, 62, 80, 0.7);
+            transform-origin: left center;
+            z-index: 5;
+        }
+        .info-panel {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .info-panel h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .element-info {
+            margin-bottom: 15px;
+        }
+        .bond-info {
+            margin-bottom: 15px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .modal-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .feedback {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .feedback.correct {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+        }
+        .feedback.incorrect {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+        }
+        .reset-btn {
+            background-color: #e74c3c;
+        }
+        .reset-btn:hover {
+            background-color: #c0392b;
+        }
+        .btn-challenge {
+            background-color: #9b59b6;
+        }
+        .btn-challenge:hover {
+            background-color: #8e44ad;
+        }
+        .challenge-modal {
+            text-align: left;
+        }
+        .challenge-item {
+            margin-bottom: 10px;
+        }
+        .challenge-desc {
+            font-weight: bold;
+        }
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .valence-display {
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .cert-container {
+            background-color: white;
+            border: 2px solid #3498db;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+        .cert-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .cert-student {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .cert-details {
+            margin: 20px 0;
+        }
+        .cert-seal {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(#f39c12, #e67e22);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        @media (max-width: 768px) {
+            .game-grid {
+                flex-direction: column;
+            }
+            .periodic-table, .workspace, .info-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen">
+            <h1>Chemical Bonding Explorer</h1>
+            <p class="subtitle">Learn about chemical bonds by building molecules!</p>
+            
+            <div class="instructions">
+                <h3>How to Play:</h3>
+                <ol>
+                    <li>Select a difficulty level to get started.</li>
+                    <li>Drag elements from the periodic table to the workspace.</li>
+                    <li>Form bonds between atoms by clicking on one atom and then another.</li>
+                    <li>Create stable molecules with correct bonding to earn points.</li>
+                    <li>Learn about different types of bonds: ionic, covalent, and metallic.</li>
+                </ol>
+            </div>
+            
+            <div class="difficulty-buttons">
+                <button class="btn btn-difficulty" data-difficulty="easy">Easy</button>
+                <button class="btn btn-difficulty" data-difficulty="medium">Medium</button>
+                <button class="btn btn-difficulty" data-difficulty="hard">Hard</button>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="level-display">Level: <span id="level">1</span></div>
+                    <div class="score-display">Score: <span id="score">0</span></div>
+                    <div class="timer" id="timer"></div>
+                    <div>
+                        <button class="btn btn-challenge" id="challenge-btn">Challenge Mode</button>
+                        <button class="btn reset-btn" id="reset-btn">Reset Workspace</button>
+                        <button class="btn" id="back-btn">Main Menu</button>
+                    </div>
+                </div>
+                
+                <div class="game-grid">
+                    <div class="periodic-table">
+                        <h3>Elements</h3>
+                        <div class="elements-container" id="elements-container">
+                            <!-- Elements will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="workspace">
+                        <h3 class="workspace-heading">Workspace</h3>
+                        <div id="workspace-area">
+                            <!-- Atoms and bonds will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-panel">
+                        <h3>Information</h3>
+                        <div class="element-info" id="element-info">
+                            <p>Select an element to see information.</p>
+                        </div>
+                        <div class="bond-info" id="bond-info">
+                            <p>Create bonds to see information.</p>
+                        </div>
+                        <div class="feedback" id="feedback-area">
+                            <!-- Feedback messages will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Certificate Screen -->
+        <div id="certificate-screen" class="screen">
+            <h1>Congratulations!</h1>
+            <p class="subtitle">You've mastered chemical bonding!</p>
+            
+            <div class="cert-container">
+                <div class="cert-title">Certificate of Achievement</div>
+                <div class="cert-student">Awarded to: <span id="student-name">Chemistry Student</span></div>
+                <div class="cert-details">
+                    <p>For successfully demonstrating knowledge of chemical bonding principles</p>
+                    <p>Final Score: <span id="final-score">0</span></p>
+                    <p>Difficulty: <span id="difficulty-completed">Easy</span></p>
+                </div>
+                <p>Date: <span id="cert-date"></span></p>
+                <div class="cert-seal">A+</div>
+            </div>
+            
+            <button class="btn" id="play-again-btn">Play Again</button>
+            <button class="btn" id="print-cert-btn">Print Certificate</button>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="bond-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Bond Formed!</h3>
+            <div id="bond-modal-content" class="modal-text"></div>
+            <button class="btn" id="bond-modal-close">Continue</button>
+        </div>
+    </div>
+    
+    <div id="molecule-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Molecule Created!</h3>
+            <div id="molecule-modal-content" class="modal-text"></div>
+            <button class="btn" id="molecule-modal-continue">Continue</button>
+        </div>
+    </div>
+    
+    <div id="challenge-modal" class="modal">
+        <div class="modal-content challenge-modal">
+            <h3 class="modal-title">Challenge Mode</h3>
+            <p>Complete the following challenges within the time limit:</p>
+            <div id="challenge-list">
+                <!-- Challenges will be inserted here -->
+            </div>
+            <div id="challenge-timer"></div>
+            <button class="btn" id="start-challenge-btn">Start Challenge</button>
+            <button class="btn reset-btn" id="cancel-challenge-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Game elements and state
+        const game = {
+            difficulty: 'easy',
+            score: 0,
+            level: 1,
+            atoms: [],
+            bonds: [],
+            selectedAtom: null,
+            activeChallenge: null,
+            timer: null,
+            timeRemaining: 0,
+            
+            elements: {
+                'H': { name: 'Hydrogen', group: 1, valenceElectrons: 1, electronegativity: 2.2, color: '#e6e6e6' },
+                'He': { name: 'Helium', group: 18, valenceElectrons: 2, electronegativity: 0, color: '#d9ffff' },
+                'Li': { name: 'Lithium', group: 1, valenceElectrons: 1, electronegativity: 0.98, color: '#ff9999' },
+                'Be': { name: 'Beryllium', group: 2, valenceElectrons: 2, electronegativity: 1.57, color: '#c1ff00' },
+                'B': { name: 'Boron', group: 13, valenceElectrons: 3, electronegativity: 2.04, color: '#ffb5b5' },
+                'C': { name: 'Carbon', group: 14, valenceElectrons: 4, electronegativity: 2.55, color: '#909090' },
+                'N': { name: 'Nitrogen', group: 15, valenceElectrons: 5, electronegativity: 3.04, color: '#3050f8' },
+                'O': { name: 'Oxygen', group: 16, valenceElectrons: 6, electronegativity: 3.44, color: '#ff0d0d' },
+                'F': { name: 'Fluorine', group: 17, valenceElectrons: 7, electronegativity: 3.98, color: '#90e050' },
+                'Ne': { name: 'Neon', group: 18, valenceElectrons: 8, electronegativity: 0, color: '#b3e3f5' },
+                'Na': { name: 'Sodium', group: 1, valenceElectrons: 1, electronegativity: 0.93, color: '#ab5cf2' },
+                'Mg': { name: 'Magnesium', group: 2, valenceElectrons: 2, electronegativity: 1.31, color: '#8aff00' },
+                'Al': { name: 'Aluminum', group: 13, valenceElectrons: 3, electronegativity: 1.61, color: '#bfa6a6' },
+                'Si': { name: 'Silicon', group: 14, valenceElectrons: 4, electronegativity: 1.9, color: '#f0c8a0' },
+                'P': { name: 'Phosphorus', group: 15, valenceElectrons: 5, electronegativity: 2.19, color: '#ff8000' },
+                'S': { name: 'Sulfur', group: 16, valenceElectrons: 6, electronegativity: 2.58, color: '#ffff30' },
+                'Cl': { name: 'Chlorine', group: 17, valenceElectrons: 7, electronegativity: 3.16, color: '#1ff01f' },
+                'Ar': { name: 'Argon', group: 18, valenceElectrons: 8, electronegativity: 0, color: '#80d1e3' }
+            },
+            
+            availableElements: {
+                'easy': ['H', 'O', 'C', 'N', 'Cl', 'Na'],
+                'medium': ['H', 'O', 'C', 'N', 'Cl', 'F', 'Na', 'Mg', 'S', 'P'],
+                'hard': ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar']
+            },
+            
+            challenges: {
+                'easy': [
+                    { desc: 'Create water (H₂O)', elements: ['H', 'H', 'O'], bonds: [['H', 'O'], ['H', 'O']] },
+                    { desc: 'Create table salt (NaCl)', elements: ['Na', 'Cl'], bonds: [['Na', 'Cl']] },
+                    { desc: 'Create methane (CH₄)', elements: ['C', 'H', 'H', 'H', 'H'], bonds: [['C', 'H'], ['C', 'H'], ['C', 'H'], ['C', 'H']] }
+                ],
+                'medium': [
+                    { desc: 'Create ammonia (NH₃)', elements: ['N', 'H', 'H', 'H'], bonds: [['N', 'H'], ['N', 'H'], ['N', 'H']] },
+                    { desc: 'Create carbon dioxide (CO₂)', elements: ['C', 'O', 'O'], bonds: [['C', 'O'], ['C', 'O']] },
+                    { desc: 'Create hydrogen peroxide (H₂O₂)', elements: ['H', 'H', 'O', 'O'], bonds: [['H', 'O'], ['H', 'O'], ['O', 'O']] }
+                ],
+                'hard': [
+                    { desc: 'Create sulfuric acid (H₂SO₄)', elements: ['H', 'H', 'S', 'O', 'O', 'O', 'O'], 
+                      bonds: [['H', 'O'], ['H', 'O'], ['S', 'O'], ['S', 'O'], ['S', 'O'], ['S', 'O']] },
+                    { desc: 'Create phosphoric acid (H₃PO₄)', elements: ['H', 'H', 'H', 'P', 'O', 'O', 'O', 'O'], 
+                      bonds: [['H', 'O'], ['H', 'O'], ['H', 'O'], ['P', 'O'], ['P', 'O'], ['P', 'O'], ['P', 'O']] },
+                    { desc: 'Create methanol (CH₃OH)', elements: ['C', 'H', 'H', 'H', 'O', 'H'], 
+                      bonds: [['C', 'H'], ['C', 'H'], ['C', 'H'], ['C', 'O'], ['O', 'H']] }
+                ]
+            },
+            
+            knownMolecules: {
+                'H2O': {
+                    name: 'Water',
+                    formula: 'H₂O',
+                    description: 'Water is a polar molecule with two hydrogen atoms bonded to one oxygen atom. The bonds are covalent with a bent molecular geometry.',
+                    bondType: 'Polar covalent'
+                },
+                'NaCl': {
+                    name: 'Sodium Chloride (Table Salt)',
+                    formula: 'NaCl',
+                    description: 'Table salt features an ionic bond between sodium (Na⁺) and chloride (Cl⁻) ions. Sodium donates its valence electron to chlorine.',
+                    bondType: 'Ionic'
+                },
+                'CH4': {
+                    name: 'Methane',
+                    formula: 'CH₄',
+                    description: 'Methane has a carbon atom bonded to four hydrogen atoms in a tetrahedral arrangement. The bonds are nonpolar covalent.',
+                    bondType: 'Nonpolar covalent'
+                },
+                'NH3': {
+                    name: 'Ammonia',
+                    formula: 'NH₃',
+                    description: 'Ammonia has a trigonal pyramidal structure with a nitrogen atom bonded to three hydrogen atoms. The bonds are polar covalent.',
+                    bondType: 'Polar covalent'
+                },
+                'CO2': {
+                    name: 'Carbon Dioxide',
+                    formula: 'CO₂',
+                    description: 'Carbon dioxide has a linear structure with a carbon atom double-bonded to two oxygen atoms. The bonds are polar covalent.',
+                    bondType: 'Polar covalent (double bonds)'
+                }
+            }
+        };
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const certificateScreen = document.getElementById('certificate-screen');
+        const elementsContainer = document.getElementById('elements-container');
+        const workspaceArea = document.getElementById('workspace-area');
+        const elementInfo = document.getElementById('element-info');
+        const bondInfo = document.getElementById('bond-info');
+        const feedbackArea = document.getElementById('feedback-area');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const timerDisplay = document.getElementById('timer');
+        const bondModal = document.getElementById('bond-modal');
+        const bondModalContent = document.getElementById('bond-modal-content');
+        const bondModalClose = document.getElementById('bond-modal-close');
+        const moleculeModal = document.getElementById('molecule-modal');
+        const moleculeModalContent = document.getElementById('molecule-modal-content');
+        const moleculeModalContinue = document.getElementById('molecule-modal-continue');
+        const challengeModal = document.getElementById('challenge-modal');
+        const challengeList = document.getElementById('challenge-list');
+        const challengeTimer = document.getElementById('challenge-timer');
+        const finalScore = document.getElementById('final-score');
+        const difficultyCompleted = document.getElementById('difficulty-completed');
+        const certDate = document.getElementById('cert-date');
+
+        // Initialize Game
+        function initGame() {
+            // Add event listeners for difficulty buttons
+            document.querySelectorAll('.btn-difficulty').forEach(button => {
+                button.addEventListener('click', () => {
+                    game.difficulty = button.dataset.difficulty;
+                    startGame();
+                });
+            });
+            
+            // Add event listeners for game control buttons
+            document.getElementById('reset-btn').addEventListener('click', resetWorkspace);
+            document.getElementById('back-btn').addEventListener('click', goToMainMenu);
+            document.getElementById('challenge-btn').addEventListener('click', showChallengeModal);
+            document.getElementById('start-challenge-btn').addEventListener('click', startChallenge);
+            document.getElementById('cancel-challenge-btn').addEventListener('click', () => {
+                challengeModal.style.display = 'none';
+            });
+            
+            // Modal close buttons
+            bondModalClose.addEventListener('click', () => {
+                bondModal.style.display = 'none';
+            });
+            moleculeModalContinue.addEventListener('click', () => {
+                moleculeModal.style.display = 'none';
+                checkForMolecules();
+            });
+            
+            // Certificate screen buttons
+            document.getElementById('play-again-btn').addEventListener('click', goToMainMenu);
+            document.getElementById('print-cert-btn').addEventListener('click', printCertificate);
+            
+            // Set current date on certificate
+            const today = new Date();
+            certDate.textContent = today.toLocaleDateString();
+        }
+
+        // Start the game
+        function startGame() {
+            // Switch from start screen to game screen
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            
+            // Reset game state
+            game.score = 0;
+            game.level = 1;
+            game.atoms = [];
+            game.bonds = [];
+            game.selectedAtom = null;
+            
+            // Update displays
+            scoreDisplay.textContent = game.score;
+            levelDisplay.textContent = game.level;
+            
+            // Populate periodic table section
+            populatePeriodicTable();
+            
+            // Reset workspace
+            resetWorkspace();
+        }
+
+        // Populate periodic table with elements based on difficulty
+        function populatePeriodicTable() {
+            elementsContainer.innerHTML = '';
+            
+            game.availableElements[game.difficulty].forEach(symbol => {
+                const element = game.elements[symbol];
+                const elementDiv = document.createElement('div');
+                elementDiv.className = 'element';
+                elementDiv.style.backgroundColor = element.color + '40';  // Add transparency to color
+                elementDiv.style.borderColor = element.color;
+                elementDiv.dataset.symbol = symbol;
+                
+                const symbolSpan = document.createElement('span');
+                symbolSpan.className = 'element-symbol';
+                symbolSpan.textContent = symbol;
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'element-name';
+                nameSpan.textContent = element.name;
+                
+                elementDiv.appendChild(symbolSpan);
+                elementDiv.appendChild(nameSpan);
+                elementsContainer.appendChild(elementDiv);
+                
+                // Add drag functionality
+                elementDiv.addEventListener('mousedown', startDragElement);
+                elementDiv.addEventListener('touchstart', startDragElement, { passive: false });
+            });
+        }
+
+        // Reset the workspace area
+        function resetWorkspace() {
+            workspaceArea.innerHTML = '';
+            game.atoms = [];
+            game.bonds = [];
+            game.selectedAtom = null;
+            updateElementInfo('Select an element to see information.');
+            updateBondInfo('Create bonds to see information.');
+            clearFeedback();
+        }
+
+        // Go back to main menu
+        function goToMainMenu() {
+            gameScreen.style.display = 'none';
+            certificateScreen.style.display = 'none';
+            startScreen.style.display = 'flex';
+            
+            // Clear any running timers
+            if (game.timer) {
+                clearInterval(game.timer);
+                game.timer = null;
+            }
+        }
+
+        // Start dragging an element
+        function startDragElement(e) {
+            e.preventDefault();
+            
+            const elementDiv = e.currentTarget;
+            const symbol = elementDiv.dataset.symbol;
+            
+            // Create a new atom for the workspace
+            createAtomInWorkspace(symbol, e);
+            
+            // Show element info
+            showElementInfo(symbol);
+        }
+
+        // Create a new atom in the workspace
+        function createAtomInWorkspace(symbol, event) {
+            const element = game.elements[symbol];
+            
+            // Calculate position relative to workspace
+            const workspace = workspaceArea.getBoundingClientRect();
+            let clientX, clientY;
+            
+            if (event.type === 'touchstart') {
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else {
+                clientX = event.clientX;
+                clientY = event.clientY;
+            }
+            
+            const x = Math.max(35, Math.min(workspace.width - 35, clientX - workspace.left));
+            const y = Math.max(35, Math.min(workspace.height - 35, clientY - workspace.top));
+            
+            // Create atom element
+            const atomId = `atom-${Date.now()}`;
+            const atomDiv = document.createElement('div');
+            atomDiv.className = 'atom-in-workspace';
+            atomDiv.id = atomId;
+            atomDiv.dataset.symbol = symbol;
+            atomDiv.style.left = `${x}px`;
+            atomDiv.style.top = `${y}px`;
+            atomDiv.style.backgroundColor = element.color + '80';  // Semi-transparent
+            
+            const symbolSpan = document.createElement('span');
+            symbolSpan.className = 'element-symbol';
+            symbolSpan.textContent = symbol;
+            
+            atomDiv.appendChild(symbolSpan);
+            
+            // Create electrons visualization
+            const electronsDiv = document.createElement('div');
+            electronsDiv.className = 'electrons';
+            
+            // Add valence electrons visualization
+            for (let i = 0; i < element.valenceElectrons; i++) {
+                const electron = document.createElement('div');
+                electron.className = 'electron';
+                const angle = (i * (360 / element.valenceElectrons)) * (Math.PI / 180);
+                const radius = 35;  // Distance from center of atom
+                
+                electron.style.left = `${radius * Math.cos(angle) + 35 - 6}px`;  // 6 is half of electron width
+                electron.style.top = `${radius * Math.sin(angle) + 35 - 6}px`;
+                
+                electronsDiv.appendChild(electron);
+            }
+            
+            atomDiv.appendChild(electronsDiv);
+            workspaceArea.appendChild(atomDiv);
+            
+            // Add atom to game state
+            const atom = {
+                id: atomId,
+                symbol: symbol,
+                element: element,
+                x: x,
+                y: y,
+                bondedElectrons: 0
+            };
+            
+            game.atoms.push(atom);
+            
+            // Make atom draggable
+            makeAtomDraggable(atomDiv);
+            
+            // Make atom clickable for bonding
+            atomDiv.addEventListener('click', selectAtomForBonding);
+            
+            return atom;
+        }
+
+        // Make atom draggable in the workspace
+        function makeAtomDraggable(atomDiv) {
+            let offsetX = 0, offsetY = 0, isDragging = false;
+            
+            atomDiv.addEventListener('mousedown', startDrag);
+            atomDiv.addEventListener('touchstart', startDrag, { passive: false });
+            
+            function startDrag(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (e.type === 'touchstart') {
+                    offsetX = e.touches[0].clientX - atomDiv.getBoundingClientRect().left;
+                    offsetY = e.touches[0].clientY - atomDiv.getBoundingClientRect().top;
+                } else {
+                    offsetX = e.clientX - atomDiv.getBoundingClientRect().left;
+                    offsetY = e.clientY - atomDiv.getBoundingClientRect().top;
+                }
+                
+                isDragging = true;
+                
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('touchmove', drag, { passive: false });
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchend', stopDrag);
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                let clientX, clientY;
+                if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                const workspace = workspaceArea.getBoundingClientRect();
+                let newX = clientX - workspace.left - offsetX;
+                let newY = clientY - workspace.top - offsetY;
+                
+                // Keep atom within workspace bounds
+                newX = Math.max(0, Math.min(workspace.width - atomDiv.offsetWidth, newX));
+                newY = Math.max(0, Math.min(workspace.height - atomDiv.offsetHeight, newY));
+                
+                atomDiv.style.left = `${newX}px`;
+                atomDiv.style.top = `${newY}px`;
+                
+                // Update atom position in game state
+                const atom = game.atoms.find(a => a.id === atomDiv.id);
+                if (atom) {
+                    atom.x = newX + (atomDiv.offsetWidth / 2);
+                    atom.y = newY + (atomDiv.offsetHeight / 2);
+                    
+                    // Update any bonds connected to this atom
+                    updateBondsForAtom(atom);
+                }
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('touchmove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchend', stopDrag);
+            }
+        }
+
+        // Update bonds connected to a moved atom
+        function updateBondsForAtom(atom) {
+            game.bonds.forEach(bond => {
+                if (bond.atom1.id === atom.id || bond.atom2.id === atom.id) {
+                    const bondElement = document.getElementById(bond.id);
+                    if (bondElement) {
+                        updateBondPosition(bond, bondElement);
+                    }
+                }
+            });
+        }
+
+        // Show element information in the info panel
+        function showElementInfo(symbol) {
+            const element = game.elements[symbol];
+            
+            const content = `
+                <h4>${element.name} (${symbol})</h4>
+                <p>Group: ${element.group}</p>
+                <p>Valence Electrons: ${element.valenceElectrons}</p>
+                <p>Electronegativity: ${element.electronegativity}</p>
+                <div class="valence-display">
+                    Electron configuration: [core]${getValenceConfig(element)}
+                </div>
+            `;
+            
+            updateElementInfo(content);
+        }
+
+        // Get valence electron configuration string
+        function getValenceConfig(element) {
+            if (element.group <= 2) {
+                return `${element.group}s¹`;
+            } else if (element.group <= 12) {
+                return `2s² ${element.group - 2}d${element.valenceElectrons - 2}`;
+            } else {
+                // Main group elements
+                let config = '2s²';
+                const pElectrons = element.valenceElectrons - 2;
+                if (pElectrons > 0) {
+                    config += ` ${element.group - 10}p${pElectrons}`;
+                }
+                return config;
+            }
+        }
+
+        // Update element info panel
+        function updateElementInfo(content) {
+            elementInfo.innerHTML = content;
+        }
+
+        // Update bond info panel
+        function updateBondInfo(content) {
+            bondInfo.innerHTML = content;
+        }
+
+        // Show feedback message
+        function showFeedback(message, isCorrect) {
+            feedbackArea.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            feedbackArea.innerHTML = message;
+        }
+
+        // Clear feedback message
+        function clearFeedback() {
+            feedbackArea.className = 'feedback';
+            feedbackArea.innerHTML = '';
+        }
+
+        // Select an atom for bonding
+        function selectAtomForBonding(e) {
+            e.stopPropagation();
+            const atomDiv = e.currentTarget;
+            const atomId = atomDiv.id;
+            const atom = game.atoms.find(a => a.id === atomId);
+            
+            if (!atom) return;
+            
+            // If no atom is selected, select this one
+            if (!game.selectedAtom) {
+                game.selectedAtom = atom;
+                atomDiv.style.boxShadow = '0 0 10px 5px #3498db';
+                return;
+            }
+            
+            // If this atom is already selected, deselect it
+            if (game.selectedAtom.id === atomId) {
+                game.selectedAtom = null;
+                atomDiv.style.boxShadow = 'none';
+                return;
+            }
+            
+            // Otherwise, try to form a bond between the selected atom and this one
+            const selectedAtomDiv = document.getElementById(game.selectedAtom.id);
+            if (selectedAtomDiv) {
+                selectedAtomDiv.style.boxShadow = 'none';
+            }
+            
+            formBond(game.selectedAtom, atom);
+            game.selectedAtom = null;
+        }
+
+        // Form a bond between two atoms
+        function formBond(atom1, atom2) {
+            // Check if a bond already exists between these atoms
+            const existingBond = game.bonds.find(b => 
+                (b.atom1.id === atom1.id && b.atom2.id === atom2.id) ||
+                (b.atom1.id === atom2.id && b.atom2.id === atom1.id)
+            );
+            
+            if (existingBond) {
+                showFeedback("These atoms are already bonded.", false);
+                return;
+            }
+            
+            // Calculate bond type based on electronegativity difference
+            const electronegativityDiff = Math.abs(atom1.element.electronegativity - atom2.element.electronegativity);
+            let bondType = '';
+            
+            if (electronegativityDiff < 0.5) {
+                bondType = 'Nonpolar Covalent';
+            } else if (electronegativityDiff < 1.7) {
+                bondType = 'Polar Covalent';
+            } else {
+                bondType = 'Ionic';
+            }
+            
+            // Check if bonding is possible based on valence electrons
+            if (!canAtomsBond(atom1, atom2)) {
+                showFeedback(`${atom1.symbol} and ${atom2.symbol} cannot form a bond with their current valence state.`, false);
+                return;
+            }
+            
+            // Create visual bond element
+            const bondId = `bond-${Date.now()}`;
+            const bondElement = document.createElement('div');
+            bondElement.className = 'bond';
+            bondElement.id = bondId;
+            
+            // Add bond to game state
+            const bond = {
+                id: bondId,
+                atom1: atom1,
+                atom2: atom2,
+                type: bondType
+            };
+            
+            game.bonds.push(bond);
+            
+            // Update bond visualization
+            workspaceArea.appendChild(bondElement);
+            updateBondPosition(bond, bondElement);
+            
+            // Update atoms' bonded electrons state
+            atom1.bondedElectrons++;
+            atom2.bondedElectrons++;
+            
+            // Show bond information
+            showBondInfo(bond);
+            
+            // Award points
+            const points = getBondPoints(bondType);
+            updateScore(points);
+            
+            // Show bond modal
+            showBondModal(bond);
+        }
+
+        // Check if two atoms can form a bond based on their valence state
+        function canAtomsBond(atom1, atom2) {
+            // Noble gases (group 18) typically don't form bonds
+            if (atom1.element.group === 18 || atom2.element.group === 18) {
+                return false;
+            }
+            
+            // Check if atoms have available electrons for bonding
+            const maxBonds1 = getMaxBonds(atom1.element);
+            const maxBonds2 = getMaxBonds(atom2.element);
+            
+            return atom1.bondedElectrons < maxBonds1 && atom2.bondedElectrons < maxBonds2;
+        }
+
+        // Get maximum number of bonds an element can form
+        function getMaxBonds(element) {
+            if (element.group <= 2) {
+                return element.valenceElectrons;  // Group 1-2 can lose all valence electrons
+            } else if (element.group >= 13 && element.group <= 17) {
+                return 8 - element.valenceElectrons;  // Groups 13-17 follow octet rule
+            } else {
+                return 4;  // Transition metals can form variable bonds, default to 4
+            }
+        }
+
+        // Calculate points for forming a bond
+        function getBondPoints(bondType) {
+            switch (bondType) {
+                case 'Nonpolar Covalent':
+                    return 10;
+                case 'Polar Covalent':
+                    return 15;
+                case 'Ionic':
+                    return 20;
+                default:
+                    return 5;
+            }
+        }
+
+        // Update the bond position based on the connected atoms
+        function updateBondPosition(bond, bondElement) {
+            const atom1Div = document.getElementById(bond.atom1.id);
+            const atom2Div = document.getElementById(bond.atom2.id);
+            
+            if (!atom1Div || !atom2Div) return;
+            
+            const atom1Rect = atom1Div.getBoundingClientRect();
+            const atom2Rect = atom2Div.getBoundingClientRect();
+            const workspaceRect = workspaceArea.getBoundingClientRect();
+            
+            const atom1X = atom1Rect.left - workspaceRect.left + atom1Rect.width / 2;
+            const atom1Y = atom1Rect.top - workspaceRect.top + atom1Rect.height / 2;
+            const atom2X = atom2Rect.left - workspaceRect.left + atom2Rect.width / 2;
+            const atom2Y = atom2Rect.top - workspaceRect.top + atom2Rect.height / 2;
+            
+            const distance = Math.sqrt(Math.pow(atom2X - atom1X, 2) + Math.pow(atom2Y - atom1Y, 2));
+            const angle = Math.atan2(atom2Y - atom1Y, atom2X - atom1X) * (180 / Math.PI);
+            
+            bondElement.style.width = `${distance}px`;
+            bondElement.style.left = `${atom1X}px`;
+            bondElement.style.top = `${atom1Y}px`;
+            bondElement.style.transform = `rotate(${angle}deg)`;
+            
+            // Style based on bond type
+            if (bond.type === 'Ionic') {
+                bondElement.style.backgroundColor = 'rgba(233, 30, 99, 0.7)';
+                bondElement.style.height = '4px';
+                bondElement.style.borderRadius = '2px';
+            } else if (bond.type === 'Polar Covalent') {
+                bondElement.style.backgroundColor = 'rgba(156, 39, 176, 0.7)';
+                bondElement.style.height = '5px';
+                bondElement.style.borderRadius = '2px';
+            } else {
+                bondElement.style.backgroundColor = 'rgba(44, 62, 80, 0.7)';
+                bondElement.style.height = '6px';
+                bondElement.style.borderRadius = '3px';
+            }
+        }
+
+        // Show bond information in the info panel
+        function showBondInfo(bond) {
+            const content = `
+                <h4>${bond.atom1.symbol}-${bond.atom2.symbol} Bond</h4>
+                <p>Bond Type: ${bond.type}</p>
+                <p>Electronegativity Difference: ${Math.abs(bond.atom1.element.electronegativity - bond.atom2.element.electronegativity).toFixed(2)}</p>
+                <p>${getBondDescription(bond)}</p>
+            `;
+            
+            updateBondInfo(content);
+        }
+
+        // Get description for a bond type
+        function getBondDescription(bond) {
+            switch (bond.type) {
+                case 'Nonpolar Covalent':
+                    return 'Electrons are shared equally between atoms.';
+                case 'Polar Covalent':
+                    const moreElectronegativeSymbol = bond.atom1.element.electronegativity > bond.atom2.element.electronegativity ? bond.atom1.symbol : bond.atom2.symbol;
+                    return `Electrons are shared unequally, with ${moreElectronegativeSymbol} pulling electrons more strongly.`;
+                case 'Ionic':
+                    const cation = bond.atom1.element.electronegativity < bond.atom2.element.electronegativity ? bond.atom1.symbol : bond.atom2.symbol;
+                    const anion = bond.atom1.element.electronegativity > bond.atom2.element.electronegativity ? bond.atom1.symbol : bond.atom2.symbol;
+                    return `${cation} donates electrons to ${anion}, forming ${cation}⁺ and ${anion}⁻ ions.`;
+                default:
+                    return '';
+            }
+        }
+
+        // Show bond creation modal
+        function showBondModal(bond) {
+            let content = `
+                <p>You created a ${bond.type} bond between ${bond.atom1.symbol} and ${bond.atom2.symbol}!</p>
+                <p>${getBondDescription(bond)}</p>
+            `;
+            
+            bondModalContent.innerHTML = content;
+            bondModal.style.display = 'flex';
+            
+            // Check if a molecule was formed after modal is closed
+            bondModalClose.onclick = function() {
+                bondModal.style.display = 'none';
+                checkForMolecules();
+            };
+        }
+
+        // Check if any known molecules have been formed
+        function checkForMolecules() {
+            // Simple molecule detection based on atoms and bonds
+            if (game.atoms.length < 2) return;
+            
+            // Try to match existing molecules
+            for (const [formula, molecule] of Object.entries(game.knownMolecules)) {
+                if (isMoleculeFormed(formula)) {
+                    showMoleculeModal(molecule);
+                    updateScore(50);  // Bonus points for forming a molecule
+                    return;
+                }
+            }
+        }
+
+        // Check if a specific molecule is formed
+        function isMoleculeFormed(formula) {
+            // Simple check based on element counts and bonds
+            // This is a simplified implementation that can be expanded
+            
+            const elementCounts = {};
+            
+            // Parse formula to get element counts
+            // Example: H2O would be {H: 2, O: 1}
+            const elementMatches = formula.match(/([A-Z][a-z]*)(\d*)/g);
+            
+            if (!elementMatches) return false;
+            
+            elementMatches.forEach(match => {
+                const element = match.match(/([A-Z][a-z]*)/)[1];
+                const count = match.match(/(\d+)$/) ? parseInt(match.match(/(\d+)$/)[1]) : 1;
+                elementCounts[element] = count;
+            });
+            
+            // Check if workspace has the right atoms
+            const workspaceElementCounts = {};
+            game.atoms.forEach(atom => {
+                workspaceElementCounts[atom.symbol] = (workspaceElementCounts[atom.symbol] || 0) + 1;
+            });
+            
+            // Compare element counts
+            for (const [element, count] of Object.entries(elementCounts)) {
+                if (!workspaceElementCounts[element] || workspaceElementCounts[element] < count) {
+                    return false;
+                }
+            }
+            
+            // Basic check that enough bonds exist
+            // This is simplified and could be improved
+            const totalRequiredBonds = Object.values(elementCounts).reduce((a, b) => a + b, 0) - 1;
+            
+            return game.bonds.length >= totalRequiredBonds;
+        }
+
+        // Show molecule creation modal
+        function showMoleculeModal(molecule) {
+            const content = `
+                <p>Congratulations! You created ${molecule.name} (${molecule.formula})!</p>
+                <p>${molecule.description}</p>
+                <p>Bond Type: ${molecule.bondType}</p>
+                <p>+50 bonus points!</p>
+            `;
+            
+            moleculeModalContent.innerHTML = content;
+            moleculeModal.style.display = 'flex';
+        }
+
+        // Update score
+        function updateScore(points) {
+            game.score += points;
+            scoreDisplay.textContent = game.score;
+            
+            // Check if player should level up
+            if (game.score >= game.level * 100) {
+                levelUp();
+            }
+        }
+
+        // Level up
+        function levelUp() {
+            game.level++;
+            levelDisplay.textContent = game.level;
+            
+            // Show level up message
+            showFeedback(`Level up! You are now at level ${game.level}!`, true);
+            
+            // Check if game is completed (reached max level for difficulty)
+            const maxLevel = { 'easy': 3, 'medium': 5, 'hard': 7 }[game.difficulty];
+            
+            if (game.level > maxLevel) {
+                showCertificate();
+            }
+        }
+
+        // Show challenge modal
+        function showChallengeModal() {
+            // Populate challenge list based on difficulty
+            const challenges = game.challenges[game.difficulty];
+            
+            challengeList.innerHTML = '';
+            challenges.forEach((challenge, index) => {
+                const challengeDiv = document.createElement('div');
+                challengeDiv.className = 'challenge-item';
+                challengeDiv.innerHTML = `
+                    <p class="challenge-desc">${index + 1}. ${challenge.desc}</p>
+                `;
+                challengeList.appendChild(challengeDiv);
+            });
+            
+            challengeTimer.innerHTML = '';
+            challengeModal.style.display = 'flex';
+        }
+
+        // Start challenge mode
+        function startChallenge() {
+            // Select a random challenge from the current difficulty
+            const challenges = game.challenges[game.difficulty];
+            const randomIndex = Math.floor(Math.random() * challenges.length);
+            game.activeChallenge = challenges[randomIndex];
+            
+            // Clear workspace
+            resetWorkspace();
+            
+            // Show the challenge
+            showFeedback(`Challenge: ${game.activeChallenge.desc}`, true);
+            
+            // Set up timer based on difficulty
+            const timeLimit = { 'easy': 60, 'medium': 90, 'hard': 120 }[game.difficulty];
+            game.timeRemaining = timeLimit;
+            
+            updateTimer();
+            game.timer = setInterval(updateTimer, 1000);
+            
+            // Close challenge modal
+            challengeModal.style.display = 'none';
+        }
+
+        // Update challenge timer
+        function updateTimer() {
+            if (game.timeRemaining <= 0) {
+                clearInterval(game.timer);
+                game.timer = null;
+                
+                // Challenge failed
+                showFeedback("Time's up! Challenge failed.", false);
+                game.activeChallenge = null;
+                return;
+            }
+            
+            timerDisplay.textContent = `Time: ${game.timeRemaining}s`;
+            game.timeRemaining--;
+            
+            // Check if challenge is completed
+            if (game.activeChallenge && isChallengeSolved()) {
+                clearInterval(game.timer);
+                game.timer = null;
+                
+                // Award bonus points based on remaining time
+                const timeBonus = game.timeRemaining * 2;
+                updateScore(100 + timeBonus);
+                
+                showFeedback(`Challenge completed! +100 points and +${timeBonus} time bonus!`, true);
+                game.activeChallenge = null;
+                timerDisplay.textContent = '';
+            }
+        }
+
+        // Check if the current challenge is solved
+        function isChallengeSolved() {
+            if (!game.activeChallenge) return false;
+            
+            // Check for required elements
+            const elementCounts = {};
+            game.activeChallenge.elements.forEach(element => {
+                elementCounts[element] = (elementCounts[element] || 0) + 1;
+            });
+            
+            const workspaceElementCounts = {};
+            game.atoms.forEach(atom => {
+                workspaceElementCounts[atom.symbol] = (workspaceElementCounts[atom.symbol] || 0) + 1;
+            });
+            
+            // Check element counts
+            for (const [element, count] of Object.entries(elementCounts)) {
+                if (!workspaceElementCounts[element] || workspaceElementCounts[element] < count) {
+                    return false;
+                }
+            }
+            
+            // Check for required bonds
+            // This is a simplified check
+            if (game.bonds.length < game.activeChallenge.bonds.length) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Show certificate screen
+        function showCertificate() {
+            gameScreen.style.display = 'none';
+            certificateScreen.style.display = 'flex';
+            
+            finalScore.textContent = game.score;
+            difficultyCompleted.textContent = game.difficulty.charAt(0).toUpperCase() + game.difficulty.slice(1);
+        }
+
+        // Print certificate
+        function printCertificate() {
+            window.print();
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

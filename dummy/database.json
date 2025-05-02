@@ -1,0 +1,49 @@
+{
+    "equipment": [
+      {
+        "id": "erlenmeyer-flask",
+        "name": "Erlenmeyer Flask",
+        "aliases": ["Conical Flask"],
+        "specifications": {
+          "sizeOptions": ["25ml", "50ml", "100ml", "250ml", "500ml", "1000ml"],
+          "material": "Borosilicate Glass",
+          "types": ["Narrow Neck", "Wide Neck"],
+          "temperatureRange": {
+            "min": -70,
+            "max": 500,
+            "unit": "°C"
+          },
+          "location": {
+            "cabinet": "A3",
+            "shelf": 2
+          }
+        },
+        "purposes": [
+          "Mixing and stirring solutions",
+          "Heating liquids",
+          "Containing chemical reactions",
+          "Titrations",
+          "Preparing solutions"
+        ],
+        "handling": [
+          "Inspect for cracks before each use",
+          "Heat gradually to prevent thermal shock",
+          "Do not heat thick-walled flasks over direct flame",
+          "Store in designated cabinets away from edges",
+          "Clean immediately after use with appropriate solvents"
+        ],
+        "maintenance": [
+          "Wash with laboratory detergent and rinse thoroughly",
+          "For persistent residues, soak in appropriate cleaning solution",
+          "Rinse multiple times with deionized water",
+          "Dry in inverted position on drying rack",
+          "Periodic annealing may be required for heavily used flasks"
+        ],
+        "inventory": {
+          "qrCode": true,
+          "status": "In Stock"
+        },
+        "imageUrl": "/images/erlenmeyer-flask.jpg"
+      }
+    ]
+  }

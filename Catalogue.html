@@ -1,0 +1,101 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+const equipmentData = [
+  {
+    name: "Beaker",
+    image: "/images/beaker.png",
+    description: "A simple container used for stirring, mixing and heating liquids.",
+    typicalUse: "General mixing and heating",
+    safetyNotes: "Handle with care when hot."
+  },
+  {
+    name: "Pipette",
+    image: "/images/pipette.png",
+    description: "Used to transport a measured volume of liquid.",
+    typicalUse: "Transferring small volumes",
+    safetyNotes: "Do not mouth pipette."
+  }
+];
+
+const chemicalData = [
+  {
+    name: "Hydrochloric Acid",
+    formula: "HCl",
+    cas: "7647-01-0",
+    hazard: "Corrosive",
+    storage: "Store in a cool, ventilated area away from bases.",
+    usage: "Used in titrations and pH adjustments."
+  },
+  {
+    name: "Sodium Hydroxide",
+    formula: "NaOH",
+    cas: "1310-73-2",
+    hazard: "Corrosive",
+    storage: "Store in airtight container away from acids.",
+    usage: "Commonly used in base titrations."
+  }
+];
+
+export default function ChemLabCatalogue() {
+  const [search, setSearch] = useState("");
+
+  const filteredChemicals = chemicalData.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.formula.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="p-4 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">General Chemistry Lab Catalogue</h1>
+      <Tabs defaultValue="equipment">
+        <TabsList>
+          <TabsTrigger value="equipment">Equipment & Glassware</TabsTrigger>
+          <TabsTrigger value="chemicals">Chemical Inventory</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="equipment">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {equipmentData.map((item, index) => (
+              <Card key={index}>
+                <CardContent className="p-4">
+                  <img src={item.image} alt={item.name} className="h-32 object-contain mx-auto" />
+                  <h2 className="text-xl font-semibold mt-2">{item.name}</h2>
+                  <p><strong>Description:</strong> {item.description}</p>
+                  <p><strong>Use:</strong> {item.typicalUse}</p>
+                  <p><strong>Safety:</strong> {item.safetyNotes}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="chemicals">
+          <Input
+            className="mt-4"
+            placeholder="Search by name or formula..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredChemicals.map((chem, index) => (
+              <Card key={index}>
+                <CardContent className="p-4">
+                  <h2 className="text-xl font-semibold">{chem.name}</h2>
+                  <p><strong>Formula:</strong> {chem.formula}</p>
+                  <p><strong>CAS No:</strong> {chem.cas}</p>
+                  <p><strong>Hazard:</strong> {chem.hazard}</p>
+                  <p><strong>Storage:</strong> {chem.storage}</p>
+                  <p><strong>Usage:</strong> {chem.usage}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

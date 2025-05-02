@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atomic Architect</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #3f51b5;
+            margin-bottom: 10px;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .element-info {
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .element-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .element-symbol {
+            font-size: 30px;
+            font-weight: bold;
+            color: #3f51b5;
+        }
+        
+        .atom-display {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .nucleus {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #607d8b;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .electron-shell {
+            position: absolute;
+            border: 2px dashed #9e9e9e;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .shell-1 {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .shell-2 {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .shell-3 {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .electron {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #2196f3;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .proton {
+            width: 25px;
+            height: 25px;
+            background-color: #f44336;
+            border-radius: 50%;
+            margin: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .neutron {
+            width: 25px;
+            height: 25px;
+            background-color: #ffc107;
+            border-radius: 50%;
+            margin: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .particle-control {
+            text-align: center;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            width: 30%;
+        }
+        
+        .particle-count {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 10px 15px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .add-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .remove-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .verify-btn {
+            background-color: #3f51b5;
+            color: rgb(255, 255, 255);
+            padding: 12px 25px;
+            font-size: 16px;
+        }
+        
+        .reset-btn {
+            background-color: #9e9e9e;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+        }
+        
+        .next-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .hint {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .info-panel {
+            margin-top: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .element-fact {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Atomic Architect</h1>
+            <p>Build atoms by placing the correct number of protons, neutrons, and electrons!</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="element-info">
+                <div>
+                    <span class="element-name">Hydrogen</span>
+                    <span class="element-symbol">H</span>
+                </div>
+                <div>Atomic Number: <span id="atomic-number">1</span></div>
+            </div>
+            
+            <div class="atom-display">
+                <div class="nucleus" id="nucleus"></div>
+                <div class="electron-shell shell-1" id="shell-1"></div>
+                <div class="electron-shell shell-2" id="shell-2"></div>
+                <div class="electron-shell shell-3" id="shell-3"></div>
+            </div>
+            
+            <div class="controls">
+                <div class="particle-control">
+                    <h3>Protons (+)</h3>
+                    <div class="particle-count" id="proton-count">0</div>
+                    <div class="control-buttons">
+                        <button class="add-btn" id="add-proton">+</button>
+                        <button class="remove-btn" id="remove-proton">-</button>
+                    </div>
+                </div>
+                
+                <div class="particle-control">
+                    <h3>Neutrons (n)</h3>
+                    <div class="particle-count" id="neutron-count">0</div>
+                    <div class="control-buttons">
+                        <button class="add-btn" id="add-neutron">+</button>
+                        <button class="remove-btn" id="remove-neutron">-</button>
+                    </div>
+                </div>
+                
+                <div class="particle-control">
+                    <h3>Electrons (-)</h3>
+                    <div class="particle-count" id="electron-count">0</div>
+                    <div class="control-buttons">
+                        <button class="add-btn" id="add-electron">+</button>
+                        <button class="remove-btn" id="remove-electron">-</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-buttons">
+                <button class="verify-btn" id="verify-btn">Verify Atom</button>
+                <button class="reset-btn" id="reset-btn">Reset</button>
+                <button class="next-btn" id="next-btn">Next Element</button>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <div class="info-panel">
+                <h3>Element Facts</h3>
+                <p class="element-fact" id="element-fact">Hydrogen is the lightest and most abundant chemical element in the universe. It is used in various applications including fuel cells, refining petroleum, and producing ammonia for fertilizers.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Define the elements database with properties
+        const elements = [
+            { name: "Hydrogen", symbol: "H", atomicNumber: 1, neutrons: 0, fact: "Hydrogen is the lightest and most abundant chemical element in the universe. It is used in various applications including fuel cells, refining petroleum, and producing ammonia for fertilizers." },
+            { name: "Helium", symbol: "He", atomicNumber: 2, neutrons: 2, fact: "Helium is the second most abundant element in the universe. On Earth, it's used for inflating balloons, cooling MRI machines, and in deep-sea diving equipment." },
+            { name: "Lithium", symbol: "Li", atomicNumber: 3, neutrons: 4, fact: "Lithium is the lightest metal and is primarily used in rechargeable batteries, particularly for electronic devices and electric vehicles." },
+            { name: "Beryllium", symbol: "Be", atomicNumber: 4, neutrons: 5, fact: "Beryllium is a rare element with unique properties that make it useful in aerospace applications and X-ray equipment." },
+            { name: "Boron", symbol: "B", atomicNumber: 5, neutrons: 6, fact: "Boron compounds are used in the manufacture of glass, ceramics, and detergents. It's also an essential nutrient for plants." },
+            { name: "Carbon", symbol: "C", atomicNumber: 6, neutrons: 6, fact: "Carbon is the basis of all known life on Earth. It forms more compounds than any other element and is found in coal, diamonds, and graphite." },
+            { name: "Nitrogen", symbol: "N", atomicNumber: 7, neutrons: 7, fact: "Nitrogen makes up about 78% of Earth's atmosphere. It's used in fertilizers and is essential for plant growth." },
+            { name: "Oxygen", symbol: "O", atomicNumber: 8, neutrons: 8, fact: "Oxygen is necessary for most life forms on Earth. It makes up 21% of Earth's atmosphere and is used in medical treatments and metal production." },
+            { name: "Fluorine", symbol: "F", atomicNumber: 9, neutrons: 10, fact: "Fluorine is the most reactive non-metal. It's added to toothpaste and drinking water to prevent tooth decay." },
+            { name: "Neon", symbol: "Ne", atomicNumber: 10, neutrons: 10, fact: "Neon is a noble gas used in advertising signs. When electricity passes through it, it glows with a bright orange-red color." }
+        ];
+        
+        // Game state
+        let currentElement = elements[0];
+        let protons = 0;
+        let neutrons = 0;
+        let electrons = 0;
+        
+        // DOM elements
+        const protonCountEl = document.getElementById('proton-count');
+        const neutronCountEl = document.getElementById('neutron-count');
+        const electronCountEl = document.getElementById('electron-count');
+        const nucleusEl = document.getElementById('nucleus');
+        const shell1El = document.getElementById('shell-1');
+        const shell2El = document.getElementById('shell-2');
+        const shell3El = document.getElementById('shell-3');
+        const messageEl = document.getElementById('message');
+        const elementFactEl = document.getElementById('element-fact');
+        const atomicNumberEl = document.getElementById('atomic-number');
+        
+        // Button event listeners
+        document.getElementById('add-proton').addEventListener('click', () => addParticle('proton'));
+        document.getElementById('remove-proton').addEventListener('click', () => removeParticle('proton'));
+        document.getElementById('add-neutron').addEventListener('click', () => addParticle('neutron'));
+        document.getElementById('remove-neutron').addEventListener('click', () => removeParticle('neutron'));
+        document.getElementById('add-electron').addEventListener('click', () => addParticle('electron'));
+        document.getElementById('remove-electron').addEventListener('click', () => removeParticle('electron'));
+        document.getElementById('verify-btn').addEventListener('click', verifyAtom);
+        document.getElementById('reset-btn').addEventListener('click', resetAtom);
+        document.getElementById('next-btn').addEventListener('click', nextElement);
+        
+        // Initialize game
+        function initializeGame() {
+            updateElementInfo();
+            resetAtom();
+        }
+        
+        // Update element information display
+        function updateElementInfo() {
+            document.querySelector('.element-name').textContent = currentElement.name;
+            document.querySelector('.element-symbol').textContent = currentElement.symbol;
+            atomicNumberEl.textContent = currentElement.atomicNumber;
+            elementFactEl.textContent = currentElement.fact;
+        }
+        
+        // Add a particle
+        function addParticle(type) {
+            if (type === 'proton') {
+                protons++;
+                const protonEl = document.createElement('div');
+                protonEl.className = 'proton';
+                protonEl.textContent = '+';
+                nucleusEl.appendChild(protonEl);
+                protonCountEl.textContent = protons;
+            } else if (type === 'neutron') {
+                neutrons++;
+                const neutronEl = document.createElement('div');
+                neutronEl.className = 'neutron';
+                neutronEl.textContent = 'n';
+                nucleusEl.appendChild(neutronEl);
+                neutronCountEl.textContent = neutrons;
+            } else if (type === 'electron') {
+                electrons++;
+                const electronEl = document.createElement('div');
+                electronEl.className = 'electron';
+                electronEl.textContent = '-';
+                
+                // Place electron in the correct shell
+                if (electrons <= 2) {
+                    placeElectronInShell(electronEl, 1, electrons);
+                } else if (electrons <= 10) {
+                    placeElectronInShell(electronEl, 2, electrons - 2);
+                } else {
+                    placeElectronInShell(electronEl, 3, electrons - 10);
+                }
+                
+                electronCountEl.textContent = electrons;
+            }
+            
+            clearMessage();
+        }
+        
+        // Remove a particle
+        function removeParticle(type) {
+            if (type === 'proton' && protons > 0) {
+                protons--;
+                nucleusEl.removeChild(nucleusEl.querySelector('.proton'));
+                protonCountEl.textContent = protons;
+            } else if (type === 'neutron' && neutrons > 0) {
+                neutrons--;
+                nucleusEl.removeChild(nucleusEl.querySelector('.neutron'));
+                neutronCountEl.textContent = neutrons;
+            } else if (type === 'electron' && electrons > 0) {
+                electrons--;
+                
+                // Remove from the correct shell
+                if (electrons < 2) {
+                    shell1El.removeChild(shell1El.querySelector('.electron'));
+                } else if (electrons < 10) {
+                    shell2El.removeChild(shell2El.querySelector('.electron'));
+                } else {
+                    shell3El.removeChild(shell3El.querySelector('.electron'));
+                }
+                
+                electronCountEl.textContent = electrons;
+            }
+            
+            clearMessage();
+        }
+        
+        // Place electron in the correct shell with appropriate positioning
+        function placeElectronInShell(electronEl, shellNum, position) {
+            const shellEl = document.getElementById(`shell-${shellNum}`);
+            const shellRadius = parseInt(getComputedStyle(shellEl).width) / 2;
+            const angle = (position - 1) * (360 / getShellCapacity(shellNum));
+            const x = shellRadius * Math.cos(angle * Math.PI / 180);
+            const y = shellRadius * Math.sin(angle * Math.PI / 180);
+            
+            electronEl.style.left = `calc(50% + ${x}px - 10px)`;
+            electronEl.style.top = `calc(50% + ${y}px - 10px)`;
+            shellEl.appendChild(electronEl);
+        }
+        
+        // Get shell capacity
+        function getShellCapacity(shellNum) {
+            if (shellNum === 1) return 2;
+            if (shellNum === 2) return 8;
+            if (shellNum === 3) return 18;
+            return 0;
+        }
+        
+        // Verify if the atom is correct
+        function verifyAtom() {
+            const correctProtons = currentElement.atomicNumber;
+            const correctNeutrons = currentElement.neutrons;
+            const correctElectrons = currentElement.atomicNumber; // Neutral atom
+            
+            if (protons === correctProtons && neutrons === correctNeutrons && electrons === correctElectrons) {
+                showMessage('Correct! You\'ve built a ' + currentElement.name + ' atom!', 'success');
+            } else {
+                let hint = '';
+                if (protons !== correctProtons) {
+                    hint += `Protons should be ${correctProtons}. `;
+                }
+                if (neutrons !== correctNeutrons) {
+                    hint += `Neutrons should be ${correctNeutrons}. `;
+                }
+                if (electrons !== correctElectrons) {
+                    hint += `Electrons should be ${correctElectrons} for a neutral atom. `;
+                }
+                showMessage('Not quite right. ' + hint, 'error');
+            }
+        }
+        
+        // Reset the current atom
+        function resetAtom() {
+            protons = 0;
+            neutrons = 0;
+            electrons = 0;
+            
+            protonCountEl.textContent = protons;
+            neutronCountEl.textContent = neutrons;
+            electronCountEl.textContent = electrons;
+            
+            nucleusEl.innerHTML = '';
+            shell1El.innerHTML = '';
+            shell2El.innerHTML = '';
+            shell3El.innerHTML = '';
+            
+            clearMessage();
+        }
+        
+        // Move to the next element
+        function nextElement() {
+            const currentIndex = elements.findIndex(el => el.name === currentElement.name);
+            const nextIndex = (currentIndex + 1) % elements.length;
+            currentElement = elements[nextIndex];
+            
+            updateElementInfo();
+            resetAtom();
+            showMessage(`Let's build a ${currentElement.name} atom!`, 'hint');
+        }
+        
+        // Show message
+        function showMessage(text, type) {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+        
+        // Clear message
+        function clearMessage() {
+            messageEl.textContent = '';
+            messageEl.className = 'message';
+        }
+        
+        // Initialize the game when the page loads
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>

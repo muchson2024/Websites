@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemistry Lab Catalogue</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Chemistry Lab Catalogue</div>
+        <ul class="nav-links">
+          <li><a href="#" onclick="showTab('equipment')">Equipment</a></li>
+          <li><a href="#" onclick="showTab('chemicals')">Chemicals</a></li>
+          <li><a href="#">Inventory</a></li>
+          <li><a href="#">Help</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <section class="search-section">
+    <div class="container">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for equipment or chemicals...">
+        <button class="btn">Search</button>
+      </div>
+      
+      <div class="filters">
+        <select class="filter-select">
+          <option>All Categories</option>
+          <option>Glassware</option>
+          <option>Measurement</option>
+          <option>Heating</option>
+          <option>Safety</option>
+          <option>Acids</option>
+          <option>Bases</option>
+          <option>Indicators</option>
+          <option>Solvents</option>
+          <option>Salts</option>
+        </select>
+        
+        <select class="filter-select">
+          <option>All Applications</option>
+          <option>Distillation</option>
+          <option>Titration</option>
+          <option>Filtration</option>
+          <option>Crystallization</option>
+          <option>Extraction</option>
+        </select>
+        
+        <select class="filter-select">
+          <option>All Hazard Classes</option>
+          <option>Flammable</option>
+          <option>Corrosive</option>
+          <option>Toxic</option>
+          <option>Oxidizer</option>
+          <option>Environmentally Hazardous</option>
+        </select>
+        
+        <select class="filter-select">
+          <option>Sort: A-Z</option>
+          <option>Sort: Z-A</option>
+          <option>Sort: Most Used</option>
+          <option>Sort: Recently Added</option>
+        </select>
+      </div>
+    </div>
+  </section>
+  
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('equipment')">Equipment & Glassware</div>
+      <div class="tab" onclick="showTab('chemicals')">Chemicals</div>
+    </div>
+    
+    <div id="equipment" class="tab-content active">
+      <div class="item-grid">
+        <!-- Equipment Item 1 -->
+        <div class="item-card" onclick="showModal('erlenmeyer-flask')">
+          <div class="item-image">
+            <img src="erlenmeyer.jpg" alt="Erlenmeyer Flask">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Erlenmeyer Flask</div>
+            <div class="item-meta">Glassware, Various Sizes</div>
+            <span class="item-status in-stock">In Stock</span>
+          </div>
+        </div>
+        
+        <!-- Equipment Item 2 -->
+        <div class="item-card" onclick="showModal('volumetric-flask')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Volumetric Flask">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Volumetric Flask</div>
+            <div class="item-meta">Measurement, 10-1000ml</div>
+            <span class="item-status low-stock">Low Stock</span>
+          </div>
+        </div>
+        
+        <!-- Equipment Item 3 -->
+        <div class="item-card" onclick="showModal('bunsen-burner')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Bunsen Burner">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Bunsen Burner</div>
+            <div class="item-meta">Heating, Metal</div>
+            <span class="item-status in-stock">In Stock</span>
+          </div>
+        </div>
+        
+        <!-- Equipment Item 4 -->
+        <div class="item-card" onclick="showModal('analytical-balance')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Analytical Balance">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Analytical Balance</div>
+            <div class="item-meta">Measurement, 0.0001g precision</div>
+            <span class="item-status in-stock">In Stock</span>
+          </div>
+        </div>
+        
+        <!-- Equipment Item 5 -->
+        <div class="item-card" onclick="showModal('separatory-funnel')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Separatory Funnel">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Separatory Funnel</div>
+            <div class="item-meta">Glassware, 125-1000ml</div>
+            <span class="item-status out-of-stock">Out of Stock</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="chemicals" class="tab-content">
+      <div class="item-grid">
+        <!-- Chemical Item 1 -->
+        <div class="item-card" onclick="showModal('sulfuric-acid')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Sulfuric Acid">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Sulfuric Acid</div>
+            <div class="item-meta">H₂SO₄, Corrosive</div>
+            <span class="item-status in-stock">In Stock</span>
+          </div>
+        </div>
+        
+        <!-- Chemical Item 2 -->
+        <div class="item-card" onclick="showModal('sodium-hydroxide')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Sodium Hydroxide">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Sodium Hydroxide</div>
+            <div class="item-meta">NaOH, Corrosive</div>
+            <span class="item-status in-stock">In Stock</span>
+          </div>
+        </div>
+        
+        <!-- Chemical Item 3 -->
+        <div class="item-card" onclick="showModal('ethanol')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Ethanol">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Ethanol</div>
+            <div class="item-meta">C₂H₅OH, Flammable</div>
+            <span class="item-status low-stock">Low Stock</span>
+          </div>
+        </div>
+        
+        <!-- Chemical Item 4 -->
+        <div class="item-card" onclick="showModal('copper-sulfate')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Copper Sulfate">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Copper Sulfate</div>
+            <div class="item-meta">CuSO₄·5H₂O, Environmentally Hazardous</div>
+            <span class="item-status in-stock">In Stock</span>
+          </div>
+        </div>
+        
+        <!-- Chemical Item 5 -->
+        <div class="item-card" onclick="showModal('phenolphthalein')">
+          <div class="item-image">
+            <img src="/api/placeholder/200/180" alt="Phenolphthalein">
+          </div>
+          <div class="item-details">
+            <div class="item-name">Phenolphthalein</div>
+            <div class="item-meta">C₂₀H₁₄O₄, Indicator</div>
+            <span class="item-status out-of-stock">Out of Stock</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Equipment Modal Example -->
+  <div id="erlenmeyer-flask" class="item-detail-modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('erlenmeyer-flask')">&times;</span>
+      
+      <div class="modal-grid">
+        <div class="modal-image">
+          <img src="/api/placeholder/350/300" alt="Erlenmeyer Flask">
+        </div>
+        
+        <div class="modal-details">
+          <h2>Erlenmeyer Flask</h2>
+          <p>Also known as: Conical Flask</p>
+          
+          <div class="detail-section">
+            <h3>Specifications</h3>
+            <table class="specs-table">
+              <tr>
+                <th>Size Options</th>
+                <td>25ml, 50ml, 100ml, 250ml, 500ml, 1000ml</td>
+              </tr>
+              <tr>
+                <th>Material</th>
+                <td>Borosilicate Glass</td>
+              </tr>
+              <tr>
+                <th>Type</th>
+                <td>Narrow Neck, Wide Neck</td>
+              </tr>
+              <tr>
+                <th>Temperature Range</th>
+                <td>-70°C to 500°C</td>
+              </tr>
+              <tr>
+                <th>Location</th>
+                <td>Cabinet A3, Shelf 2</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Purpose/Common Uses</h3>
+            <ul>
+              <li>Mixing and stirring solutions</li>
+              <li>Heating liquids</li>
+              <li>Containing chemical reactions</li>
+              <li>Titrations</li>
+              <li>Preparing solutions</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Proper Handling and Storage</h3>
+            <ul>
+              <li>Inspect for cracks before each use</li>
+              <li>Heat gradually to prevent thermal shock</li>
+              <li>Do not heat thick-walled flasks over direct flame</li>
+              <li>Store in designated cabinets away from edges</li>
+              <li>Clean immediately after use with appropriate solvents</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Maintenance Procedures</h3>
+            <ul>
+              <li>Wash with laboratory detergent and rinse thoroughly</li>
+              <li>For persistent residues, soak in appropriate cleaning solution</li>
+              <li>Rinse multiple times with deionized water</li>
+              <li>Dry in inverted position on drying rack</li>
+              <li>Periodic annealing may be required for heavily used flasks</li>
+            </ul>
+          </div>
+          
+          <div class="qr-code">
+            <img src="/api/placeholder/150/150" alt="QR Code">
+            <p>Scan for inventory management</p>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn">Print Details</button>
+            <button class="btn" style="background-color: var(--success);">Update Inventory</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Chemical Modal Example -->
+  <div id="sulfuric-acid" class="item-detail-modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('sulfuric-acid')">&times;</span>
+      
+      <div class="modal-grid">
+        <div class="modal-image">
+          <img src="/api/placeholder/350/300" alt="Sulfuric Acid">
+        </div>
+        
+        <div class="modal-details">
+          <h2>Sulfuric Acid</h2>
+          <p>Also known as: Oil of Vitriol, Battery Acid</p>
+          
+          <div class="detail-section">
+            <h3>Chemical Information</h3>
+            <table class="specs-table">
+              <tr>
+                <th>Chemical Formula</th>
+                <td>H₂SO₄</td>
+              </tr>
+              <tr>
+                <th>CAS Number</th>
+                <td>7664-93-9</td>
+              </tr>
+              <tr>
+                <th>Molecular Weight</th>
+                <td>98.079 g/mol</td>
+              </tr>
+              <tr>
+                <th>Concentration</th>
+                <td>98% (Concentrated), 0.5M, 1.0M, 2.0M (Solutions)</td>
+              </tr>
+              <tr>
+                <th>Location</th>
+                <td>Acid Cabinet A, Shelf 1 (Ventilated)</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Hazard Information</h3>
+            <div class="hazard-icons">
+              <img src="/api/placeholder/40/40" alt="Corrosive" class="hazard-icon">
+              <img src="/api/placeholder/40/40" alt="Health Hazard" class="hazard-icon">
+              <img src="/api/placeholder/40/40" alt="Environmental Hazard" class="hazard-icon">
+            </div>
+            <ul>
+              <li>Corrosive to skin and eyes</li>
+              <li>Causes severe burns</li>
+              <li>Harmful if inhaled</li>
+              <li>Reacts violently with water (always add acid to water)</li>
+              <li>Environmental hazard</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Storage Requirements</h3>
+            <ul>
+              <li>Store in corrosion-resistant cabinet with secondary containment</li>
+              <li>Keep container tightly closed</li>
+              <li>Store away from bases, metals, and organic materials</li>
+              <li>Ventilated area required</li>
+              <li>Maximum storage temperature: 30°C</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Compatibility Information</h3>
+            <p><strong>Do not store with:</strong></p>
+            <ul>
+              <li>Bases (e.g., sodium hydroxide, potassium hydroxide)</li>
+              <li>Metals (e.g., zinc, aluminum)</li>
+              <li>Organic materials</li>
+              <li>Water</li>
+              <li>Chlorates, perchlorates, permanganates</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Common Laboratory Applications</h3>
+            <ul>
+              <li>Acid catalyzed reactions</li>
+              <li>Dehydrating agent</li>
+              <li>pH adjustment</li>
+              <li>Cleaning agent for glassware</li>
+              <li>Battery electrolyte</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Safety Data</h3>
+            <a href="#" class="btn" style="background-color: var(--warning);">View Safety Data Sheet</a>
+          </div>
+          
+          <div class="qr-code">
+            <img src="/api/placeholder/150/150" alt="QR Code">
+            <p>Scan for inventory management</p>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn">Print Details</button>
+            <button class="btn" style="background-color: var(--success);">Update Inventory</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About</h3>
+          <p>Chemistry Laboratory Catalogue System</p>
+          <p>Version 1.0</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Equipment</a></li>
+            <li><a href="#">Chemicals</a></li>
+            <li><a href="#">Safety Guidelines</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Contact</h3>
+          <p>Lab Manager: M Muchson</p>
+          <p>Email: lab@example.com</p>
+          <p>Emergency: Ext. 5555</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrochemistry Assessment</title>
+    <style>
+        :root {
+            --primary: #2962ff;
+            --secondary: #0039cb;
+            --success: #2e7d32;
+            --danger: #d32f2f;
+            --warning: #ff9800;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --gray: #757575;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        button:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: black;
+        }
+        
+        .progress-container {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .timer.warning {
+            color: var(--warning);
+        }
+        
+        .timer.danger {
+            color: var(--danger);
+        }
+        
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .answers-container {
+            margin-left: 20px;
+        }
+        
+        .multiple-choice label,
+        .true-false label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .matching-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .matching-item select {
+            min-width: 200px;
+            padding: 5px;
+        }
+        
+        .short-answer textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        
+        .diagram-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background-color: rgba(46, 125, 50, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .feedback.incorrect {
+            background-color: rgba(211, 47, 47, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .pagination button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            background-color: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+        
+        .pagination button.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .pagination button.answered {
+            background-color: #e3f2fd;
+            border-color: var(--primary);
+        }
+        
+        #results-container {
+            display: none;
+        }
+        
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .result-item.correct {
+            border-left: 5px solid var(--success);
+        }
+        
+        .result-item.incorrect {
+            border-left: 5px solid var(--danger);
+        }
+        
+        .result-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-summary h2 {
+            margin-bottom: 10px;
+        }
+        
+        .result-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        #reference-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .reference-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 1001;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Accessibility features */
+        .high-contrast {
+            background-color: black !important;
+            color: white !important;
+        }
+        
+        .high-contrast .container,
+        .high-contrast .question-container,
+        .high-contrast #reference-panel {
+            background-color: black !important;
+            color: white !important;
+            border: 1px solid yellow !important;
+        }
+        
+        .high-contrast button {
+            background-color: yellow !important;
+            color: black !important;
+            border: 2px solid white !important;
+        }
+        
+        .high-contrast h1, 
+        .high-contrast h2, 
+        .high-contrast h3,
+        .high-contrast .question-text {
+            color: yellow !important;
+        }
+        
+        .high-contrast input, 
+        .high-contrast select, 
+        .high-contrast textarea {
+            background-color: black !important;
+            color: white !important;
+            border: 1px solid yellow !important;
+        }
+        
+        .text-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .large-text {
+            font-size: 120% !important;
+        }
+        
+        @media (max-width: 768px) {
+            .matching-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .matching-item select {
+                width: 100%;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            #reference-panel {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+                top: 70px;
+            }
+        }
+        
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+            text-align: center;
+        }
+        
+        #splash-screen h1 {
+            color: white;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        #splash-screen p {
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="splash-screen">
+        <h1>Electrochemistry Assessment</h1>
+        <p>This test will evaluate your understanding of galvanic and electrolysis cells. You have 60 minutes to complete 40 questions.</p>
+        <div>
+            <label>
+                <input type="checkbox" id="enable-feedback"> Enable instant feedback
+            </label>
+        </div>
+        <button id="start-test" class="btn-success">Start Test</button>
+    </div>
+    
+    <div id="test-container" style="display: none;">
+        <header>
+            <h1>Electrochemistry Assessment</h1>
+            <div class="timer">60:00</div>
+        </header>
+        
+        <div class="container">
+            <div class="controls">
+                <div>
+                    <button id="prev-question" disabled>Previous</button>
+                    <button id="next-question">Next</button>
+                    <button id="submit-test" class="btn-success" style="display: none;">Submit Test</button>
+                </div>
+                <div class="text-size-control">
+                    <button id="toggle-high-contrast">High Contrast</button>
+                    <button id="toggle-text-size">Larger Text</button>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            
+            <div class="pagination" id="question-pagination"></div>
+            
+            <div id="current-question"></div>
+        </div>
+    </div>
+    
+    <div id="results-container" class="container">
+        <div class="result-summary">
+            <h2>Test Results</h2>
+            <div class="result-score">
+                Score: <span id="final-score">0</span>%
+            </div>
+            <p>You answered <span id="correct-count">0</span> out of <span id="total-questions">40</span> questions correctly.</p>
+        </div>
+        
+        <button id="show-review" class="btn-primary">Review Answers</button>
+        
+        <div id="results-breakdown" style="display: none;"></div>
+    </div>
+    
+    <button class="reference-toggle" id="toggle-reference">R</button>
+    <div id="reference-panel">
+        <h3>Reference Materials</h3>
+        <div>
+            <button id="toggle-periodic-table">Periodic Table</button>
+            <button id="toggle-formulas">Formula Sheet</button>
+            <button id="toggle-calculator">Calculator</button>
+        </div>
+        
+        <div id="periodic-table" style="display: none; margin-top: 15px;">
+            <h4>Periodic Table</h4>
+            <img src="/api/placeholder/400/320" alt="Periodic Table of Elements" width="100%">
+        </div>
+        
+        <div id="formula-sheet" style="display: none; margin-top: 15px;">
+            <h4>Electrochemistry Formulas</h4>
+            <p>Cell Potential: E°cell = E°cathode - E°anode</p>
+            <p>Nernst Equation: E = E° - (RT/nF)ln(Q)</p>
+            <p>Faraday's Law: m = (M × I × t)/(n × F)</p>
+            <p>where:</p>
+            <ul>
+                <li>m = mass of substance (g)</li>
+                <li>M = molar mass (g/mol)</li>
+                <li>I = current (A)</li>
+                <li>t = time (s)</li>
+                <li>n = electrons transferred</li>
+                <li>F = Faraday constant (96,485 C/mol)</li>
+            </ul>
+        </div>
+        
+        <div id="calculator" style="display: none; margin-top: 15px;">
+            <h4>Calculator</h4>
+            <input type="text" id="calc-display" readonly style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+                <button class="calc-btn">7</button>
+                <button class="calc-btn">8</button>
+                <button class="calc-btn">9</button>
+                <button class="calc-btn">/</button>
+                <button class="calc-btn">4</button>
+                <button class="calc-btn">5</button>
+                <button class="calc-btn">6</button>
+                <button class="calc-btn">*</button>
+                <button class="calc-btn">1</button>
+                <button class="calc-btn">2</button>
+                <button class="calc-btn">3</button>
+                <button class="calc-btn">-</button>
+                <button class="calc-btn">0</button>
+                <button class="calc-btn">.</button>
+                <button class="calc-btn">=</button>
+                <button class="calc-btn">+</button>
+                <button class="calc-btn" style="grid-column: span 2;">C</button>
+                <button class="calc-btn" style="grid-column: span 2;">←</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="submission-modal" class="modal">
+        <div class="modal-content">
+            <h2>Submit Test?</h2>
+            <p>Are you sure you want to submit your test? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="cancel-submit">Cancel</button>
+                <button id="confirm-submit" class="btn-success">Submit</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="timeout-modal" class="modal">
+        <div class="modal-content">
+            <h2>Time's Up!</h2>
+            <p>Your test has been automatically submitted.</p>
+            <div class="modal-buttons">
+                <button id="view-results" class="btn-primary">View Results</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Test questions data
+        const questions = [
+            // Multiple Choice Questions (1-15)
+            {
+                id: 1,
+                type: 'multiple-choice',
+                text: 'In a galvanic cell, what is the purpose of the salt bridge?',
+                options: [
+                    'To prevent the solutions from mixing',
+                    'To allow electron flow between half-cells',
+                    'To maintain electrical neutrality by allowing ion flow',
+                    'To serve as the anode of the cell'
+                ],
+                correctAnswer: 2,
+                explanation: 'The salt bridge maintains electrical neutrality by allowing ions to flow between the half-cells, without allowing the solutions to mix.'
+            },
+            {
+                id: 2,
+                type: 'multiple-choice',
+                text: 'At which electrode does reduction occur in a galvanic cell?',
+                options: [
+                    'Anode',
+                    'Cathode',
+                    'Salt bridge',
+                    'Electrolyte'
+                ],
+                correctAnswer: 1,
+                explanation: 'Reduction occurs at the cathode of a galvanic cell, where electrons are gained by the species being reduced.'
+            },
+            {
+                id: 3,
+                type: 'multiple-choice',
+                text: 'Which statement about standard reduction potentials is correct?',
+                options: [
+                    'The more positive the value, the greater the tendency to be reduced',
+                    'The more negative the value, the greater the tendency to be reduced',
+                    'They are independent of concentration',
+                    'They are measured relative to platinum electrode'
+                ],
+                correctAnswer: 0,
+                explanation: 'The more positive the standard reduction potential, the greater the tendency for the species to be reduced (gain electrons).'
+            },
+            {
+                id: 4,
+                type: 'multiple-choice',
+                text: 'What happens at the anode of an electrolytic cell?',
+                options: [
+                    'Reduction',
+                    'Oxidation',
+                    'Both reduction and oxidation',
+                    'Neither reduction nor oxidation'
+                ],
+                correctAnswer: 1,
+                explanation: 'Oxidation occurs at the anode of an electrolytic cell, where electrons are lost by the species being oxidized.'
+            },
+            {
+                id: 5,
+                type: 'multiple-choice',
+                text: 'What is the difference between a galvanic cell and an electrolytic cell?',
+                options: [
+                    'Galvanic cells convert chemical energy to electrical energy; electrolytic cells do the opposite',
+                    'Galvanic cells require a salt bridge; electrolytic cells do not',
+                    'Galvanic cells involve only one half-reaction; electrolytic cells involve two',
+                    'Galvanic cells involve non-spontaneous reactions; electrolytic cells involve spontaneous reactions'
+                ],
+                correctAnswer: 0,
+                explanation: 'Galvanic cells convert chemical energy to electrical energy through spontaneous redox reactions, while electrolytic cells use electrical energy to drive non-spontaneous chemical reactions.'
+            },
+            {
+                id: 6,
+                type: 'multiple-choice',
+                text: 'Which of the following is NOT a component of a typical galvanic cell?',
+                options: [
+                    'Anode',
+                    'Cathode',
+                    'External power source',
+                    'Salt bridge'
+                ],
+                correctAnswer: 2,
+                explanation: 'Galvanic cells do not require an external power source as they generate electricity through spontaneous redox reactions. External power sources are used in electrolytic cells.'
+            },
+            {
+                id: 7,
+                type: 'multiple-choice',
+                text: 'In cell notation Zn(s)|Zn²⁺(aq)||Cu²⁺(aq)|Cu(s), which is the anode?',
+                options: [
+                    'Zn(s)',
+                    'Zn²⁺(aq)',
+                    'Cu²⁺(aq)',
+                    'Cu(s)'
+                ],
+                correctAnswer: 0,
+                explanation: 'In cell notation, the anode is written on the left side. Here, Zn(s) is being oxidized to Zn²⁺(aq), making it the anode.'
+            },
+            {
+                id: 8,
+                type: 'multiple-choice',
+                text: 'In an electrolytic cell used for copper plating, what happens at the cathode?',
+                options: [
+                    'Cu(s) is oxidized to Cu²⁺(aq)',
+                    'Cu²⁺(aq) is reduced to Cu(s)',
+                    'H₂O is oxidized to O₂',
+                    'H₂O is reduced to H₂'
+                ],
+                correctAnswer: 1,
+                explanation: 'In copper plating, Cu²⁺ ions in solution are reduced to solid copper at the cathode, forming the plated layer.'
+            },
+            {
+                id: 9,
+                type: 'multiple-choice',
+                text: 'Which factor does NOT affect the cell potential of a galvanic cell?',
+                options: [
+                    'Temperature',
+                    'Concentration of ions',
+                    'The material of the connecting wires',
+                    'The identity of the electrodes'
+                ],
+                correctAnswer: 2,
+                explanation: 'The material of the connecting wires does not affect the cell potential as long as they provide a conductive path for electrons. The other factors all affect cell potential according to the Nernst equation.'
+            },
+            {
+                id: 10,
+                type: 'multiple-choice',
+                text: 'What is the purpose of adding a small amount of H₂SO₄ to water during the electrolysis of water?',
+                options: [
+                    'To increase the pH of the solution',
+                    'To increase the conductivity of the solution',
+                    'To prevent the formation of hydrogen gas',
+                    'To catalyze the decomposition of water'
+                ],
+                correctAnswer: 1,
+                explanation: 'Pure water is a poor conductor of electricity. Adding H₂SO₄ increases the conductivity by providing ions that can carry current through the solution.'
+            },
+            {
+                id: 11,
+                type: 'multiple-choice',
+                text: 'Which statement about Faraday\'s laws of electrolysis is correct?',
+                options: [
+                    'The mass of substance produced is inversely proportional to the current',
+                    'The mass of substance produced is proportional to the molecular weight',
+                    'The mass of substance produced is independent of time',
+                    'The mass of substance produced is proportional to the equivalent weight of the substance'
+                ],
+                correctAnswer: 3,
+                explanation: 'According to Faraday\'s law, the mass of a substance produced at an electrode is directly proportional to the equivalent weight (molar mass divided by the number of electrons transferred) of the substance.'
+            },
+            {
+                id: 12,
+                type: 'multiple-choice',
+                text: 'What happens to the cell potential of a concentration cell when the concentrations in both half-cells become equal?',
+                options: [
+                    'It increases',
+                    'It decreases',
+                    'It becomes zero',
+                    'It doubles'
+                ],
+                correctAnswer: 2,
+                explanation: 'A concentration cell generates potential due to the difference in concentration between the half-cells. When the concentrations equalize, the cell potential becomes zero.'
+            },
+            {
+                id: 13,
+                type: 'multiple-choice',
+                text: 'During the electrolysis of molten NaCl, what is produced at the cathode?',
+                options: [
+                    'Na(s)',
+                    'Cl₂(g)',
+                    'O₂(g)',
+                    'H₂(g)'
+                ],
+                correctAnswer: 0,
+                explanation: 'In the electrolysis of molten NaCl, Na⁺ ions are reduced to Na metal at the cathode: Na⁺ + e⁻ → Na(s).'
+            },
+            {
+                id: 14,
+                type: 'multiple-choice',
+                text: 'Which metal would be LEAST suitable as a sacrificial anode to protect iron from corrosion?',
+                options: [
+                    'Zinc',
+                    'Magnesium',
+                    'Copper',
+                    'Aluminum'
+                ],
+                correctAnswer: 2,
+                explanation: 'A sacrificial anode must be more easily oxidized than iron. Copper has a higher (more positive) reduction potential than iron, so it would not protect iron from oxidation.'
+            },
+            {
+                id: 15,
+                type: 'multiple-choice',
+                text: 'In the nickel-cadmium rechargeable battery, what process occurs during charging?',
+                options: [
+                    'A spontaneous redox reaction',
+                    'Electrolysis',
+                    'Concentration equalization',
+                    'Neutralization'
+                ],
+                correctAnswer: 1,
+                explanation: 'Charging a battery involves electrolysis (a non-spontaneous redox reaction driven by an external power source) that reverses the spontaneous discharge reaction.'
+            },
+            
+            // True/False Questions (16-20)
+            {
+                id: 16,
+                type: 'true-false',
+                text: 'In a galvanic cell, electrons flow from the anode to the cathode through the external circuit.',
+                correctAnswer: true,
+                explanation: 'In a galvanic cell, oxidation occurs at the anode, producing electrons that flow through the external circuit to the cathode where reduction occurs.'
+            },
+            {
+                id: 17,
+                type: 'true-false',
+                text: 'The anode in an electrolytic cell is positively charged.',
+                correctAnswer: true,
+                explanation: 'In an electrolytic cell, the anode is connected to the positive terminal of the power supply, making it positively charged and attracting anions.'
+            },
+            {
+                id: 18,
+                type: 'true-false',
+                text: 'Electrolysis of aqueous NaCl primarily produces H₂ and Cl₂ gases instead of Na metal.',
+                correctAnswer: true,
+                explanation: 'In aqueous NaCl electrolysis, water is preferentially reduced at the cathode to form H₂ rather than Na⁺ being reduced to Na metal, because the reduction potential of water is higher than that of Na⁺.'
+            },
+            {
+                id: 19,
+                type: 'true-false',
+                text: 'The standard hydrogen electrode (SHE) has a standard reduction potential defined as exactly 0 V.',
+                correctAnswer: true,
+                explanation: 'The SHE serves as the reference electrode against which all standard electrode potentials are measured, and its potential is defined as exactly 0 V.'
+            },
+            {
+                id: 20,
+                type: 'true-false',
+                text: 'Increasing the concentration of reactants in a galvanic cell always increases the cell potential.',
+                correctAnswer: false,
+                explanation: 'According to the Nernst equation, increasing the concentration of reactants will increase the cell potential only if the reactants appear in the denominator of the reaction quotient Q. If they appear in the numerator, increasing their concentration would decrease the cell potential.'
+            },
+            
+            // Matching Questions (21-25)
+            {
+                id: 21,
+                type: 'matching',
+                text: 'Match the electrochemical cell components with their functions:',
+                items: [
+                    'Anode in galvanic cell',
+                    'Cathode in galvanic cell',
+                    'Salt bridge',
+                    'Electrolyte',
+                    'Voltmeter'
+                ],
+                options: [
+                    'Site of oxidation where electrons are produced',
+                    'Site of reduction where electrons are consumed',
+                    'Maintains electrical neutrality between half-cells',
+                    'Conducts ions within a half-cell',
+                    'Measures the potential difference between electrodes'
+                ],
+                correctAnswer: [0, 1, 2, 3, 4],
+                explanation: 'The anode is where oxidation occurs and electrons are produced. The cathode is where reduction occurs and electrons are consumed. The salt bridge maintains electrical neutrality. The electrolyte conducts ions within half-cells. The voltmeter measures the potential difference.'
+            },
+            {
+                id: 22,
+                type: 'matching',
+                text: 'Match the electrolysis applications with their products:',
+                items: [
+                    'Electrolysis of water',
+                    'Electrolysis of molten NaCl',
+                    'Electroplating with copper',
+                    'Aluminum production',
+                    'Chloralkali process'
+                ],
+                options: [
+                    'H₂ and O₂ gases',
+                    'Na metal and Cl₂ gas',
+                    'Metallic copper coating',
+                    'Pure aluminum metal',
+                    'Cl₂, H₂, and NaOH'
+                ],
+                correctAnswer: [0, 1, 2, 3, 4],
+                explanation: 'Water electrolysis produces H₂ and O₂. Molten NaCl electrolysis yields Na metal and Cl₂ gas. Copper electroplating forms copper coatings. Aluminum production involves electrolytic reduction of Al₂O₃. The chloralkali process produces Cl₂, H₂, and NaOH.'
+            },
+            {
+                id: 23,
+                type: 'matching',
+                text: 'Match the electrochemical term with its correct definition:',
+                items: [
+                    'Electrochemical series',
+                    'Nernst equation',
+                    'Electrolysis',
+                    'Faraday\'s constant',
+                    'Standard cell potential'
+                ],
